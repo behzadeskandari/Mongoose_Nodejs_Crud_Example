@@ -6,8 +6,16 @@
 mongoose.connect("mongodb://127.0.0.1:27017/BehzadDb", { useNewUrlParser: true});
 
 const fruitSchema = new mongoose.Schema({
-    name: String,
-    rating: Number,
+    name: {
+        type: String,
+        required: [true,"Please Check your Data entery No Name Specified"], 
+    },
+    rating: {
+        type: Number,
+        min: 1,
+        max: 10,
+        
+    },
     review: String,
 })
 
@@ -16,12 +24,13 @@ const Fruit = mongoose.model("Fruit",fruitSchema);
 
 
 const fruit = new Fruit({
-    name: "Apple",
-    rating: 7,
+    name: "",
+    rating: 1,
     review: "Pretty solid as a fruit."
 })
 
-// fruit.save();
+ //fruit.save();
+
 
 const personSchema = new mongoose.Schema({
     name: String,
@@ -29,6 +38,7 @@ const personSchema = new mongoose.Schema({
 })
 
 const Person = mongoose.model("Person",personSchema);
+
 const person = new Person({
     name: "Behzad",
     age: 35
@@ -55,18 +65,53 @@ const banana = new Fruit({
 })
 
 
-Fruit.insertMany([kiwi,orange,banana],function(err){
-    if(err){
-        console.log(err);
-    }else{
-        console.log("Succesfully saved all the fruit to fruitsDB");
-    }
+// Fruit.insertMany([kiwi,orange,banana],function(err){
+//     if(err){
+//         console.log(err);
+//     }else{
+//         console.log("Succesfully saved all the fruit to fruitsDB");
+//     }
 
+// })
+
+Fruit.find(function(err,fruits){
+    if (err) {
+        console.log(err);
+    }else {
+        console.log(fruits);
+    }
+    mongoose.connection.close();
+
+    fruits.forEach(function(fruit){
+        console.log(fruit.name);
+    })
 })
 
-// Fruit.
+
+///find and update based on id 
+Fruit.updateOne({_id:""}, {name: "Peach"}, function(error){
+    if(error){
+        console.log(err);
+    }else {
+        console.log("Successfully updated the document")
+    }
+})
 
 
+// Fruit.deleteOne({name: "Peach"},function(error){
+//     if (error) {
+//         console.log(error);
+//     }else{
+//         console.log("Successfuly deleted the document");
+//     }
+// });
 
 
+Person.deleteMany({name: "John"},function(error){
+    if (error) {
+        console.log(error);
+    }else{
+        console.log("Successfully deleted all the document");
+    }
+})
 
